@@ -6,7 +6,8 @@ from oraculo import ask_oracle, get_notion_data  # Importando a função get_not
 from datetime import datetime
 
 # Inicializando o Firebase Admin SDK (evitando duplicação)
-cred = credentials.Certificate(r'C:\meusProjetos\chaves\neuranotion-fabapar-firebase-adminsdk-fbsvc-86f22a543a.json')
+cred = credentials.Certificate('./chaves/neuranotion-fabapar-firebase-adminsdk-fbsvc-86f22a543a.json')
+
 
 # Verifica se o app já foi inicializado, se não, inicializa
 if not firebase_admin._apps:
@@ -84,7 +85,7 @@ if st.button("Perguntar"):
                 'timestamp': firestore.SERVER_TIMESTAMP
             })
             st.write(f"Obrigado pelo seu feedback: {feedback}!")
-            
+
 st.markdown(""" 
     --- 
     <p style="text-align: center; color: gray; font-size: 14px;">© 2025 Matheus Amaral. Todos os direitos reservados.</p>
