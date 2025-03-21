@@ -4,20 +4,20 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from oraculo import ask_oracle, get_notion_data  # Importando a função get_notion_data
 from datetime import datetime
+import json
 
-# Inicializando o Firebase Admin SDK (evitando duplicação)
-cred = credentials.Certificate('./chaves/neuranotion-fabapar-firebase-adminsdk-fbsvc-86f22a543a.json')
+# Carregar credenciais do Streamlit Secrets
+firebase_credentials = json.loads(st.secrets["firebase_credentials"])
 
-
-# Verifica se o app já foi inicializado, se não, inicializa
+# Inicializar Firebase apenas se ainda não foi inicializado
 if not firebase_admin._apps:
+    cred = credentials.Certificate(firebase_credentials)
     firebase_admin.initialize_app(cred)
-else:
-    firebase_admin.get_app()  # Caso o app já exista, usa o app existente
+
+db = firestore.client()
 
 # Função para salvar a pergunta no Firestore
 def salvar_pergunta(pergunta):
-    db = firestore.client()
     perguntas_ref = db.collection("perguntas")
     perguntas_ref.add({
         'pergunta': pergunta,
@@ -26,13 +26,9 @@ def salvar_pergunta(pergunta):
 
 # Função para carregar o histórico de perguntas do Firestore
 def carregar_historico():
-    db = firestore.client()
-    perguntas_ref = db.collection("perguntas").order_by('timestamp', direction=firestore.Query.DESCENDING)  # Ordena pelo timestamp
+    perguntas_ref = db.collection("perguntas").order_by('timestamp', direction=firestore.Query.DESCENDING)
     perguntas = perguntas_ref.stream()
-    historico = []
-    for pergunta in perguntas:
-        historico.append(pergunta.to_dict())
-    return historico
+    return [pergunta.to_dict() for pergunta in perguntas]
 
 # Exibe sugestões baseadas no histórico
 def exibir_sugestoes():
@@ -56,9 +52,9 @@ query = st.text_input("Digite sua pergunta:")
 
 def typing_effect(text, delay=0.03):
     """Função para simular o efeito de digitação."""
-    output = st.empty()  # Criar um marcador vazio onde o texto será mostrado
-    for i in range(len(text)+1):
-        output.markdown(f"<p style='font-size: 16px; font-family: Arial, sans-serif;'>{text[:i]}</p>", unsafe_allow_html=True)  
+    output = st.empty()
+    for i in range(len(text) + 1):
+        output.markdown(f"<p style='font-size: 16px; font-family: Arial, sans-serif;'>{text[:i]}</p>", unsafe_allow_html=True)
         time.sleep(delay)
 
 if st.button("Perguntar"):
@@ -74,9 +70,8 @@ if st.button("Perguntar"):
         # Feedback do usuário
         feedback = st.radio("Avalie a resposta:", ("Útil", "Não útil"))
 
-        if feedback:
-            # Salvar o feedback no Firestore
-            db = firestore.client()
+        
+    if feedback:
             feedback_ref = db.collection("feedbacks")
             feedback_ref.add({
                 'pergunta': query,
