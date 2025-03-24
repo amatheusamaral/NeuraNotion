@@ -31,7 +31,8 @@ def get_notion_data():
     for page in results.get("results", []):
         properties = page["properties"]
         question = properties.get("Pergunta", {}).get("title", [{}])[0].get("text", {}).get("content", "Sem pergunta")
-        answer = properties.get("Resposta", {}).get("rich_text", [{}])[0].get("text", {}).get("content", "Sem resposta")
+        rich_text_list = properties.get("Resposta", {}).get("rich_text", [])
+        answer = " ".join([block.get("text", {}).get("content", "") for block in rich_text_list])
         documents.append({"question": question, "answer": answer})
     
     return documents
