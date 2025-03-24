@@ -5,3 +5,5 @@ python-dotenv
 sentence-transformers
 firebase-admin
 google-cloud-firestore
+supabase
+
