@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
-from functools import lru_cache
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -20,8 +19,6 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 # Definir um limiar mínimo de similaridade
 SIMILARITY_THRESHOLD = 0.5
 
-# Cache para evitar chamadas desnecessárias ao Notion
-@lru_cache(maxsize=1)
 def get_notion_data():
     """Busca as perguntas e respostas do Notion e calcula os embeddings antecipadamente."""
     try:
@@ -44,7 +41,6 @@ def get_notion_data():
 # Função para buscar a melhor resposta
 def ask_oracle(query, notion_data):
     """Consulta a IA e retorna a melhor resposta, usando o Notion como base."""
-    notion_data = get_notion_data()
     if not notion_data:
         return "Nenhuma informação disponível no momento."
 
@@ -65,17 +61,17 @@ def ask_oracle(query, notion_data):
         return "Não encontrei uma resposta relevante. Tente reformular sua pergunta."
 
 if __name__ == "__main__":
-    notion_data = get_notion_data()
+    while True:
+        query = input("Digite sua pergunta: ")
 
-    if notion_data:
-        print("Perguntas e respostas do Notion carregadas.")
+        if query.lower() == "sair":
+            break
 
-        while True:
-            query = input("Digite sua pergunta: ")
-            if query.lower() == "sair":
-                break
+        notion_data = get_notion_data()  # Carregar dados do Notion sempre que uma nova pergunta for feita
 
-            resposta = ask_oracle(query)
+        if notion_data:
+            print("Perguntas e respostas do Notion carregadas.")
+            resposta = ask_oracle(query, notion_data)
             print("\nOráculo:", resposta, "\n")
-    else:
-        print("Nenhum dado encontrado no Notion.")
+        else:
+            print("Nenhum dado encontrado no Notion.")
