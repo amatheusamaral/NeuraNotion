@@ -1,9 +1,11 @@
 import os
+import time
 from notion_client import Client
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from functools import lru_cache
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -18,9 +20,10 @@ model = SentenceTransformer('all-MiniLM-L6-v2')
 # Definir um limiar mínimo de similaridade
 SIMILARITY_THRESHOLD = 0.5
 
-# Função para obter os dados do Notion
+# Cache para evitar chamadas desnecessárias ao Notion
+@lru_cache(maxsize=1)
 def get_notion_data():
-    """Busca as perguntas e respostas do Notion."""
+    """Busca as perguntas e respostas do Notion e calcula os embeddings antecipadamente."""
     try:
         results = notion.databases.query(database_id=DATABASE_ID)
     except Exception as e:
@@ -33,20 +36,24 @@ def get_notion_data():
         question = properties.get("Pergunta", {}).get("title", [{}])[0].get("text", {}).get("content", "Sem pergunta")
         rich_text_list = properties.get("Resposta", {}).get("rich_text", [])
         answer = " ".join([block.get("text", {}).get("content", "") for block in rich_text_list])
-        documents.append({"question": question, "answer": answer})
+        question_embedding = model.encode(question)  # Pré-calcular embedding
+        documents.append({"question": question, "answer": answer, "embedding": question_embedding})
     
     return documents
 
 # Função para buscar a melhor resposta
 def ask_oracle(query, notion_data):
     """Consulta a IA e retorna a melhor resposta, usando o Notion como base."""
-    query_embedding = model.encode([query])
+    notion_data = get_notion_data()
+    if not notion_data:
+        return "Nenhuma informação disponível no momento."
+
+    query_embedding = model.encode(query)
     best_match = None
     max_similarity = -1
     
     for data in notion_data:
-        question_embedding = model.encode([data['question']])
-        similarity = cosine_similarity(query_embedding, question_embedding)[0][0]
+        similarity = cosine_similarity([query_embedding], [data['embedding']])[0][0]
 
         if similarity > max_similarity:
             max_similarity = similarity
@@ -55,7 +62,7 @@ def ask_oracle(query, notion_data):
     if max_similarity > SIMILARITY_THRESHOLD:
         return best_match['answer']
     else:
-        return "Não encontrei uma resposta relevante para sua pergunta."
+        return "Não encontrei uma resposta relevante. Tente reformular sua pergunta."
 
 if __name__ == "__main__":
     notion_data = get_notion_data()
@@ -68,7 +75,7 @@ if __name__ == "__main__":
             if query.lower() == "sair":
                 break
 
-            resposta = ask_oracle(query, notion_data)
+            resposta = ask_oracle(query)
             print("\nOráculo:", resposta, "\n")
     else:
         print("Nenhum dado encontrado no Notion.")
