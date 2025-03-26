@@ -9,8 +9,6 @@ SUPABASE_URL = "https://dlnkrqvdmqlvbywycvcl.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsbmtycXZkbXFsdmJ5d3ljdmNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4MjE5MTIsImV4cCI6MjA1ODM5NzkxMn0.fUY104cBJrV-Jk9P9Zix--zlNb9rLCzKrANU6xmSueQ"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-
-
 notion_data = get_notion_data()
 
 # Criar estado na sessão do Streamlit para controle de conversa
