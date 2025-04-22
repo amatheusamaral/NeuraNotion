@@ -12,7 +12,7 @@ notion = Client(auth=os.getenv("NOTION_API_KEY"))
 DATABASE_ID = os.getenv("NOTION_DATABASE_ID")
 
 # Carregar o modelo de embeddings do Sentence Transformers
-model = SentenceTransformer('paraphrase-MiniLM-L6-v2') 
+model = SentenceTransformer('all-MiniLM-L6-v2', cache_folder='./model_cache')
 
 # Limiar de similaridade para considerar como uma resposta relevante
 SIMILARITY_THRESHOLD = 0.5
