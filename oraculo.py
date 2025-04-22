@@ -3,6 +3,7 @@ import time
 from notion_client import Client
 from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
+SentenceTransformer('all-MiniLM-L6-v2', cache_dir=None)
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
