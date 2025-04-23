@@ -31,43 +31,42 @@ def salvar_pergunta(pergunta, resposta):
 # Definindo sugestões de perguntas manualmente com categorias
 categorias_perguntas = {
     "RH": [
-        "Quais são os benefícios oferecidos?",
-        "Como faço a atualização cadastral?",
-        "Como faço para consultar a programação de férias?",
-        "Onde posso registrar o meu banco de horas?",
-        "Oportunidades de capacitação e treinamentos?",
-        "Contatos úteis para suporte ou informações adicionais?"
+        "Quais são os benefícios oferecidos aos colaboradores?",
+        "Como faço para atualizar meus dados cadastrais?",
+        "Como consultar e agendar minhas férias?",
+        "Como funciona o controle e registro do banco de horas?",
+        "Quais cursos e treinamentos estão disponíveis para desenvolvimento profissional?",
+        "Com quem posso falar em caso de dúvidas sobre folha de pagamento ou contrato?"
     ],
     "Processos": [
-        "Qual o horário de funcionamento do laboratório?",
-        "Onde posso encontrar o material didático?"
+        "Qual é o horário de funcionamento dos setores administrativos?",
+        "Onde posso acessar os documentos e procedimentos internos?",
+        "Como funciona o fluxo de solicitação de serviços internos?",
+        "Quais são os prazos para solicitações administrativas?",
+        "Onde encontro os formulários institucionais?",
+        "Como posso solicitar uso de salas ou recursos da instituição?"
     ],
     "TI": [
-        "Como posso acessar os resultados de provas?",
-        "Como funciona o processo de matrícula?"
+        "Como acesso o sistema acadêmico ou corporativo?",
+        "Estou com problemas de acesso ao e-mail institucional, como resolver?",
+        "Como solicito suporte técnico para computador ou impressora?",
+        "O que fazer quando o Wi-Fi da instituição não está funcionando?",
+        "Como redefinir minha senha do sistema?",
+        "Quais softwares estão disponíveis para uso institucional?"
     ],
     "Comunicacao": [
-        "Quais são os benefícios oferecidos aos funcionários?",
-        "Quais são os benefícios disponíveis para estagiários?"
+        "Como solicitar a divulgação de eventos ou campanhas internas?",
+        "Qual o procedimento para atualizar informações no site institucional?",
+        "Onde posso enviar sugestões de conteúdo para redes sociais?",
+        "Como entrar em contato com a equipe de comunicação?",
+        "Quais são os canais oficiais de comunicação interna?",
+        "Como posso participar das campanhas institucionais?"
     ]
 }
 
 # Layout com o menu lateral mais organizado
 st.sidebar.title("Sugestões de Perguntas")
-st.sidebar.markdown("""
-    <style>
-    .sidebar .sidebar-content {
-        padding: 20px;
-        background-color: #f0f2f6;
-    }
-    .sidebar-title {
-        color: #1f77b4;
-        font-size: 1.5em;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-    </style>
-""", unsafe_allow_html=True)
+st.sidebar.markdown("""<style>.sidebar .sidebar-content {padding: 20px; background-color: #f0f2f6;}</style>""", unsafe_allow_html=True)
 
 # Exibindo as sugestões de perguntas no menu lateral, organizadas por categorias com expanders
 for categoria, perguntas in categorias_perguntas.items():
