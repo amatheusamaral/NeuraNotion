@@ -87,12 +87,6 @@ def typing_effect(text, delay=0.03):
         output.markdown(f"{text[:i]}", unsafe_allow_html=True)
         time.sleep(delay)
 
-# Verifica se o modelo foi carregado e se os dados do Notion estão presentes
-if not notion_data:
-    st.warning("⚠️ Não foi possível carregar os dados do Notion.")
-else:
-    st.write("🔍 Dados do Notion carregados com sucesso!")
-
 # Processando a pergunta do usuário
 if st.button("Enviar", key="perguntar"):
     if query:
