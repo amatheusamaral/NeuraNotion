@@ -6,4 +6,5 @@ sentence-transformers
 firebase-admin
 google-cloud-firestore
 supabase
+psycopg2-binary
 
