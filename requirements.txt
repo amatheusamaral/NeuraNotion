@@ -1,5 +1,5 @@
-streamlit 
-notion-client 
+streamlit
+notion-client
 pandas
 python-dotenv
 sentence-transformers
@@ -7,4 +7,11 @@ firebase-admin
 google-cloud-firestore
 supabase
 psycopg2-binary
-
+flask
+flask_sqlalchemy
+flask_login
+flask_wtf
+email_validator
+qrcode
+pillow
+gunicorn
